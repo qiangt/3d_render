@@ -15,7 +15,7 @@ class Camera:
         self.far_plane = 100
 
         self.moving_speed = 0.02
-        self.rotation_speed = 0.015
+        self.rotation_speed = 1.0 * math.pi / 180.0 # 1 degree in radians
 
         self.anglePitch = 0
         self.angleYaw = 0
@@ -23,18 +23,21 @@ class Camera:
 
     def control(self):
         key = pg.key.get_pressed()
+        # left / right
         if key[pg.K_a]:
-            self.position -= self.right * self.moving_speed
+            self.position[0] -= self.moving_speed
         if key[pg.K_d]:
-            self.position += self.right * self.moving_speed
+            self.position[0] += self.moving_speed
+        # in an out
         if key[pg.K_w]:
-            self.position += self.forward * self.moving_speed
+            self.position[2] += self.moving_speed
         if key[pg.K_s]:
-            self.position -= self.forward * self.moving_speed
+            self.position[2] -= self.moving_speed
+        # up and down
         if key[pg.K_q]:
-            self.position += self.up * self.moving_speed
+            self.position[1] += self.moving_speed
         if key[pg.K_e]:
-            self.position -= self.up * self.moving_speed
+            self.position[1] -= self.moving_speed
 
         if key[pg.K_LEFT]:
             self.camera_yaw(-self.rotation_speed)
@@ -58,10 +61,12 @@ class Camera:
 
     def camera_update_axii(self):
         self.axiiIdentity()
-        rotate = rotate_x(self.anglePitch) @ rotate_y(self.angleYaw)  # this concatenation gives right visual
-        self.forward = self.forward @ rotate
-        self.right = self.right @ rotate
-        self.up = self.up @ rotate
+        # translate the the cordinate origin first, then rotate and then translate it back
+        transform = rotate_x(self.anglePitch) @ rotate_y(self.angleYaw)
+        # transform = translate_t(+obj_center) @ rotate_y(self.angleYaw) @ rotate_x(self.anglePitch) @ translate_t(-obj_center)
+        self.forward = self.forward @ transform
+        self.right = self.right @ transform
+        self.up = self.up @ transform
 
     # return the matrix to camera coordinate
     def translate_matrix(self):

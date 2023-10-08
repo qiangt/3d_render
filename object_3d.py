@@ -12,13 +12,24 @@ class Object3D:
                 (0, 0, 1, 1), (0, 1, 1, 1), (1, 1, 1, 1), (1, 0, 1, 1), 
             ])
 
+            # the order is important, I always start from left-bottom and go clock-wise
             self.faces = np.array([
-                (0, 1, 2, 3), (4, 5, 6, 7), (0, 4, 5, 1), (2, 3, 7, 6),
-                (1, 2, 5, 6), (0, 3, 7, 4)
+                (0, 1, 2, 3), (4, 5, 6, 7), (0, 1, 5, 4), (3, 2, 6, 7),
+                (1, 5, 6, 2), (0, 4, 7, 3)
             ])
         else:
             self.vertices = vertices
             self.faces = faces
+
+        self.movement_flag, self.draw_vertices = True, False            
+
+    def draw(self):
+        self.screen_project()
+        self.movement()
+
+    def movement(self):
+        if self.movement_flag:
+            self.rotate_y(-(pg.time.get_ticks() % 0.005))
 
     def screen_project(self):
         # to camera coordinate first
@@ -39,12 +50,16 @@ class Object3D:
             if not np.any((polygon == self.render.H_WIDTH) | (polygon == self.render.H_HEIGHT)):
                 pg.draw.polygon(self.render.screen, pg.Color('orange'), polygon, 3)
 
-        # for vertex in vertices:
-        #     if not np.any( (vertex == self.render.H_WIDTH) | (vertex == self.render.H_HEIGHT) ):
-        #         pg.draw.circle(self.render.screen, pg.Color('red'), vertex, 6)
+        for vertex in vertices:
+            if not np.any( (vertex == self.render.H_WIDTH) | (vertex == self.render.H_HEIGHT) ):
+                pg.draw.circle(self.render.screen, pg.Color('red'), vertex, 6)
+
+    def get_center(self):
+        center = np.mean(self.vertices, axis=0)
+        return center
 
     def translate(self, pos):
-        self.vertices = self.vertices @ translate_t(pos[0], pos[1], pos[2])
+        self.vertices = self.vertices @ translate_t(pos)
 
     def scale(self, scale_to):
         self.vertices = self.vertices @ scale_a(scale_to)

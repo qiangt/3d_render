@@ -18,8 +18,9 @@ class SoftwareRender:
         self.projection = Projection(self)
         self.object = Object3D(self)
 
-        self.object.translate([0.2, 0.4, 0.2])
         self.object.rotate_y(math.pi / 6)
+        self.object.translate([0.2, 0.4, 0.2])
+        
 
     # def create_object(self):
     #     self.camera = Camera(self, [-5, 6, -55])
@@ -40,7 +41,7 @@ class SoftwareRender:
 
     def draw(self):
         self.screen.fill(pg.Color('darkslategray'))
-        self.object.screen_project()
+        self.object.draw()
 
     def run(self):
         while True:
