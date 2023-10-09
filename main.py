@@ -14,11 +14,11 @@ class SoftwareRender:
         self.create_object()
 
     def create_object(self):
-        self.camera = Camera(self, [0.5, 1, -4])
+        self.camera = Camera(self, [0.4, 0.6, -8])
         self.projection = Projection(self)
         self.object = Object3D(self)
 
-        self.object.rotate_y(math.pi / 6)
+        # self.object.rotate_y(math.pi / 6)
         self.object.translate([0.2, 0.4, 0.2])
         
 

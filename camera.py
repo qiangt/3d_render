@@ -17,8 +17,8 @@ class Camera:
         self.moving_speed = 0.02
         self.rotation_speed = 1.0 * math.pi / 180.0 # 1 degree in radians
 
-        self.anglePitch = 0
-        self.angleYaw = 0
+        self.anglePitch = 60 * math.pi / 180.0
+        self.angleYaw = 10 * math.pi / 180.0
         self.angleRoll = 0        
 
     def control(self):
@@ -93,4 +93,4 @@ class Camera:
     
     def camera_matrix(self):
         self.camera_update_axii()
-        return self.translate_matrix() @ self.rotate_matrix()
+        return np.linalg.inv(self.translate_matrix() @ self.rotate_matrix())

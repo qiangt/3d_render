@@ -21,7 +21,7 @@ class Object3D:
             self.vertices = vertices
             self.faces = faces
 
-        self.movement_flag, self.draw_vertices = True, False            
+        self.movement_flag, self.draw_vertices = False, True            
 
     def draw(self):
         self.screen_project()
@@ -50,9 +50,10 @@ class Object3D:
             if not np.any((polygon == self.render.H_WIDTH) | (polygon == self.render.H_HEIGHT)):
                 pg.draw.polygon(self.render.screen, pg.Color('orange'), polygon, 3)
 
-        for vertex in vertices:
-            if not np.any( (vertex == self.render.H_WIDTH) | (vertex == self.render.H_HEIGHT) ):
-                pg.draw.circle(self.render.screen, pg.Color('red'), vertex, 6)
+        if self.draw_vertices:
+            for vertex in vertices:
+                if not np.any( (vertex == self.render.H_WIDTH) | (vertex == self.render.H_HEIGHT) ):
+                    pg.draw.circle(self.render.screen, pg.Color('red'), vertex, 6)
 
     def get_center(self):
         center = np.mean(self.vertices, axis=0)
